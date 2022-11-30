@@ -1,0 +1,21 @@
+{
+    "frames": {
+        "player": {
+            "frame": {
+                "x": 0,
+                "y": 0,
+                "w": 300,
+                "h": 300
+            }
+        }
+    },
+    "meta": {
+        "image": "Fox_New.png",
+        "format": "RGBA8888",
+        "size": {
+            "w": 100,
+            "h": 100
+        },
+        "scale": 1
+    }
+}

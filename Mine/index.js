@@ -23,39 +23,43 @@ window.onload = () => {
     const g = new PIXI.Graphics();//図形
     app.stage.addChild(g);
 
-    g.lineStyle(4, 0xffffff, 1);//線を引く(太さ、色、透明度)
-    g.moveTo(10, 10);//始点
-    g.lineTo(100, 100);//終点
-
-    g.beginFill(0xff0000);
-    g.drawCircle(1, 1, 32);//円
-    g.endFill();
+    g.width = 100;
+    g.height = 100;
+    g.x = 0;
+    g.y = 0;
     let count = 0;
-    let h = 101, hs = 1;
-    let w = 102, ws = 2;
+    let _h = 200, hs = 1;
+    let _w = 200, ws = 2;
     let rect;
-    setInterval(() => {
-
+    //setInterval(() => {
+    move = (w, h) => {
+        if (_w + w >= 500 || _w + w <= 0) {
+            return;
+        }
+        if (_h + h >= 500 || _h + h <= 0) {
+            return;
+        }
+        _w += w;
+        _h += h;
         g.clear();
         g.beginFill(0xff0000);
-        g.drawRect(w, h, 100, 100);//四角形
-        //g.drawRect(120, 12, 64, 96);
+        g.drawRect(_w, _h, 100, 100);//四角形
         g.endFill();
-        rect = new PIXI.Rectangle(w, h, w + 100, h + 100);
+        rect = new PIXI.Rectangle(_w, _h, 100, 100);
         g.hitArea = rect;
-        if (w === 500 || w === 0) {
-            ws *= -1;
-        }
-        if (h === 500 || h === 0) {
-            hs *= -1;
-        }
-        w += ws;
-        h += hs;
-        const p = new PIXI.Text(count, style);
-        p.anchor.set(0.5, 0.5);
-        p.position.set(500, 500);
-        app.stage.addChild(p);
-    }, 10);
+    }
+    //g.clear();
+    //g.beginFill(0xff0000);
+    //g.drawRect(w, h, 100, 100);//四角形
+    //g.drawRect(120, 12, 64, 96);
+    //g.endFill();
+
+
+    const p = new PIXI.Text(count, style);
+    p.anchor.set(0.5, 0.5);
+    p.position.set(500, 500);
+    app.stage.addChild(p);
+    //}, 10);
 
     g.interactive = true;
 
@@ -63,41 +67,88 @@ window.onload = () => {
         count++;
         console.log('click');
     });
+
+    g.on('pointerdown', (event) => {
+        console.log("A");
+        //g.position.set(300, 300);
+        //const pos = event.data.getLocalPosition(event.currentTarget);
+        //p.postion.set(pos.x, pos.y);
+    });
     const data = [160, 130, 200, 200, 120, 180];//多角形
     g.drawPolygon(data);
 
-    // const Fox = [
-    //     "test.json",
-    //     "Fox_New.png"
-    // ];
-
-    // //g.clear();
-    // PIXI.Loader.shared.add(Fox).load(() => {
-    //     const _texture = PIXI.Loader.shared.resources['test.json'].texture['player'];
-    //     //const _frame = new PIXI.Texture(_texture, new PIXI.Rectangle(0, 0, 320, 320));
-    //     const _player = new PIXI.Sprite(_texture);
-    //     app.stage.addChild(_player)
-    // })
 
 
 
+    let keyFlag = 0;
+    let W_Key, A_Key, S_Key, D_Key;
+    W_Key = A_Key = S_Key = D_Key = false;
+    function downHandler(event) {
+        switch (event.key) {
+            case 'd':
+                keyFlag = 1;
+                D_Key = true;
+                break;
+            case 'a':
+                keyFlag = 2;
+                A_Key = true;
+                break;
+            case 's':
+                keyFlag = 3;
+                S_Key = true;
+                break;
+            case 'w':
+                keyFlag = 4;
+                W_Key = true;
+                break;
+        }
+
+    }
+
+    // upHandlerを定義
+    function upHandler(event) {
+        switch (event.key) {
+            case 'd':
+                keyFlag = 1;
+                D_Key = false;
+                break;
+            case 'a':
+                keyFlag = 2;
+                A_Key = false;
+                break;
+            case 's':
+                keyFlag = 3;
+                S_Key = false;
+                break;
+            case 'w':
+                keyFlag = 4;
+                W_Key = false;
+                break;
+        }
+    }
+
+    app.ticker.add(update);
+    function update() {
+        if (D_Key) {
+            move(3, 0);
+        }
+        if (A_Key) {
+            move(-3, 0);
+        }
+        if (S_Key) {
+            move(0, 3);
+        }
+        if (W_Key) {
+            move(0, -3);
+        }
+
+    }
+
+    window.addEventListener("keydown", (event) => { downHandler(event) }, false);
+    window.addEventListener("keyup", (event) => { upHandler(event) }, false);
 
 
 
-    // PIXI.Loader.shared
-    //     .add(Fox)
-    //     .load(() => {
-    //         const texture = PIXI.Loader.shared.resources["test.json"].texture["player"];
-    //         const player = new PIXI.Sprite(texture);
-    //         app.stage.addChild(player);
-    //     });
 
-    // this.on('pointerdown', (event) => {
-    //     const pos = event.data.getLocalPosition(event.currentTarget);
-    //     ball.postion.set(pos.x, pos.y);
-    // });
-
-    // app.ticker.add((delta) => {
-    //     //ここに処理を書く
-    // });
 }
+
